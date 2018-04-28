@@ -11,13 +11,14 @@ export default class Preload extends Phaser.State {
   create() {
     this.game.load.crossOrigin = 'anonymous';
     this.game.load.maxParallelDownloads = Infinity;
-
+    this.game.plugins.add(PhaserNineSlice.Plugin);
     // Begin loading all of the assets.
     this.game.plugins.add(WebpackLoader, AssetManifest, '')
       .load()
       .then(() => {
         this.game.state.start('Main');
       });
+
   }
 
   /**

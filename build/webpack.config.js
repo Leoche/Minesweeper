@@ -6,6 +6,7 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 // Add support for Phaser webpack build.
 const phaserModule = path.join(__dirname, '../node_modules/phaser-ce/dist/');
+const PhaserNineSlice = path.join(__dirname, '../node_modules/@orange-games/phaser-nineslice/build/phaser-nineslice.js');
 const phaser = path.join(phaserModule, 'phaser.js');
 const pixi = path.join(phaserModule, 'pixi.js');
 
@@ -21,13 +22,14 @@ const config = {
   },
   entry: {
     app: [
-      './src/index.js',
+    './src/index.js',
     ],
     vendor: [
-      'pixi',
-      'phaser',
-      'howler',
-      'webfontloader',
+    'pixi',
+    'phaser',
+    'howler',
+    'webfontloader',
+    'PhaserNineSlice'
     ],
   },
   output: {
@@ -39,6 +41,7 @@ const config = {
     alias: {
       phaser,
       pixi,
+      PhaserNineSlice,
       assets: path.join(__dirname, '../src/assets'),
     },
   },
@@ -49,32 +52,32 @@ const config = {
   },
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        loader: 'buble-loader',
-        exclude: /node_modules\/(?!phaser-webpack-loader)/,
-        options: {
-          objectAssign: 'Object.assign',
-        },
+    {
+      test: /\.js$/,
+      loader: 'buble-loader',
+      exclude: /node_modules\/(?!phaser-webpack-loader)/,
+      options: {
+        objectAssign: 'Object.assign',
       },
-      {
-        test: /pixi\.js/,
-        use: ['expose-loader?PIXI'],
-      },
-      {
-        test: /phaser\.js$/,
-        use: ['expose-loader?Phaser'],
-      },
-      {
-        test: /\.(png|jpg|gif|svg|pvr|pkm)$/,
-        use: ['file-loader?name=assets/[name].[ext]?[hash]'],
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: 'css-loader!postcss-loader',
-        }),
-      },
+    },
+    {
+      test: /pixi\.js/,
+      use: ['expose-loader?PIXI'],
+    },
+    {
+      test: /phaser\.js$/,
+      use: ['expose-loader?Phaser'],
+    },
+    {
+      test: /\.(png|jpg|gif|svg|pvr|pkm)$/,
+      use: ['file-loader?name=assets/[name].[ext]?[hash]'],
+    },
+    {
+      test: /\.css$/,
+      use: ExtractTextPlugin.extract({
+        use: 'css-loader!postcss-loader',
+      }),
+    },
     ],
   },
   plugins: [
@@ -84,7 +87,6 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     }),
-    // Extract vendor chunks for better caching.
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
     }),
@@ -93,9 +95,10 @@ const config = {
     // Generate output HTML.
     new HTMLPlugin({
       template: './src/index.template.html',
+      inject: false
     }),
-  ],
-};
+    ],
+  };
 
 // Define production-only plugins.
 if (isProd) {

@@ -6,7 +6,6 @@ export default class Boot extends Phaser.State {
    * Preload any assets needed for the preload state.
    */
   preload() {
-
   }
 
   /**

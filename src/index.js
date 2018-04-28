@@ -5,7 +5,6 @@ import Boot from './states/Boot';
 import Preload from './states/Preload';
 import Main from './states/Main';
 import './assets/css/index.css';
-
 /**
  * Setup the root class for the whole game.
  */
@@ -63,5 +62,4 @@ class Game extends Phaser.Game {
     };
   }
 }
-
-new Game();
+window.onload = () => new Game();
