@@ -6,6 +6,7 @@ export default class Main extends Phaser.State {
     this.cellSize = 38;
     this.input.mouse.capture = true;
     this.numBee = 10;
+    this.timer = 50;
     this.size = {
       x:10,
       y:10
@@ -13,7 +14,7 @@ export default class Main extends Phaser.State {
     this.game.add.tileSprite(-5000, -5000, 10000, 10000, 'bg');
 
 
-    this.board = new Board(game, this.size.x, this.size.y, this.cellSize, this.numBee);
+    this.board = new Board(game, this.size.x, this.size.y, this.cellSize, this.numBee, this.timer);
 
 
     window.addEventListener('resize', throttle(this.resize.bind(this), 50), false);
