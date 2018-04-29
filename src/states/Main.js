@@ -4,6 +4,7 @@ import Board from '../objects/Board';
 export default class Main extends Phaser.State {
   create() {
     this.cellSize = 38;
+    this.input.mouse.capture = true;
     this.numBee = 10;
     this.size = {
       x:10,

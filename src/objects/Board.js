@@ -11,6 +11,7 @@ class Board extends Phaser.Group {
     this.cellSize = cellSize;
     this.cellSizeY = cellSize - 2;
     this.cells = [];
+    this.flagMode = false;
     this.createBackground();
     this.createCells();
     this.createBees();
@@ -18,7 +19,7 @@ class Board extends Phaser.Group {
     this.onChildInputOver.add(this.inputOver, this);
     this.onChildInputOut.add(this.inputOut, this);
     this.onChildInputDown.add(this.inputDown, this);
-    console.log('this.background.events', this.background.events)
+    this.onChildInputUp.add(this.inputUp, this);
   }
   inputOver (sprite) {
     if (sprite.constructor.name === "Cell") sprite.inputOver();
@@ -27,7 +28,27 @@ class Board extends Phaser.Group {
     if (sprite.constructor.name === "Cell") sprite.inputOut();
   }
   inputDown (sprite) {
-    if (sprite.constructor.name === "Cell") sprite.reveal();
+    this.flagMode = game.input.activePointer.rightButton.isDown && !game.input.activePointer.leftButton.isDown;
+    if (sprite.constructor.name === "Cell") sprite.inputDown();
+  }
+  inputUp (sprite, pointer){
+    if (sprite.constructor.name === "Cell"){
+      let cell = sprite;
+      if(!this.flagMode){
+        cell.reveal();
+        if(cell.neighboors === 0 && !cell.isBee()){
+          for(let i = -1; i<=1; i++){
+            for(let j = -1; j<=1; j++){
+                if(this.cells[cell.i + i] && this.cells[cell.i + i][cell.j + j] && !this.cells[cell.i + i][cell.j + j].revealed && !this.cells[cell.i + i][cell.j + j].isBee()) {
+                  this.inputUp(this.cells[cell.i + i][cell.j + j])
+                }
+            }
+          }
+        }
+      } else {
+        cell.flag();
+      }
+    }
   }
   findNeighboors(){
     for(var i = 0; i < this.x; i++){
@@ -35,14 +56,13 @@ class Board extends Phaser.Group {
         let num = 0;
         let cell = this.cells[i][j];
         if (!cell.isBee()) {
-          if(i!=0 && this.cells[i-1][j].isBee()) num++;
-          if(i!=0 && j!=0 && this.cells[i-1][j-1].isBee()) num++;
-          if(j!=0 && this.cells[i][j-1].isBee()) num++;
-          if(i!=this.x-1 && this.cells[i+1][j].isBee()) num++;
-          if(i!=this.x-1 && j!=0 && this.cells[i+1][j-1].isBee()) num++;
-          if(i!=this.x-1 && j!=this.y-1 && this.cells[i+1][j+1].isBee()) num++;
-          if(j!=this.y-1 && this.cells[i][j+1].isBee()) num++;
-          if(i!=0 && j!=this.y-1 && this.cells[i-1][j+1].isBee()) num++;
+          for(let i = -1; i<=1; i++){
+            for(let j = -1; j<=1; j++){
+              if(this.cells[cell.i + i] && this.cells[cell.i + i][cell.j + j] && this.cells[cell.i + i][cell.j + j].isBee()) {
+                num++;
+              }
+            }
+          }
           this.cells[i][j].setNeighboors(num);
         }
       }

@@ -6,6 +6,7 @@ class Cell extends Phaser.Sprite {
     this.game.add.existing(this);
     this.bee = false;
     this.revealed = false;
+    this.flagged = false;
     this.neighboors = 0;
     this.colors = ['#3498db','#3498db','#2ecc71','#e74c3c','#2c3e50','#8e44ad','#f39c12','#1abc9c','#e84393'];
     this.anchor.setTo(0);
@@ -22,16 +23,24 @@ class Cell extends Phaser.Sprite {
     this.bee = true;
   }
   inputOver() {
-    if (!this.revealed) this.frameName = 'cell_hover'
+    if (!this.revealed && !this.flagged) this.frameName = 'cell_hover'
   }
   inputOut() {
-    if (!this.revealed) this.frameName = 'cell'
+    if (!this.revealed && !this.flagged) this.frameName = 'cell'
+  }
+  inputDown() {
+    if (!this.revealed && !this.flagged) this.frameName = 'cell_active'
+  }
+  flag() {
+    this.flagged = !this.flagged;
+    if (this.flagged) this.frameName = 'cell_flag';
+    else this.frameName = 'cell';
   }
   reveal() {
+    if(this.flagged) return;
     this.revealed = true;
     if (this.bee) {
-      this.frameName = 'cell_empty';
-      this.text.setText('x');
+      this.frameName = 'cell_mine'
     } else {
       this.frameName = 'cell_empty';
       this.text.setStyle({ font: "26px 'Black Han Sans'", fill: this.colors[this.neighboors], align: "center" });
