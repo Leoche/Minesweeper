@@ -35,6 +35,7 @@ class Cell extends Phaser.Sprite {
     this.flagged = !this.flagged;
     if (this.flagged) this.frameName = 'cell_flag';
     else this.frameName = 'cell';
+    return !this.flagged ? 1 : -1;
   }
   reveal() {
     if(this.flagged) return;
