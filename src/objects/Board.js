@@ -32,8 +32,19 @@ class Board extends Phaser.Group {
   findNeighboors(){
     for(var i = 0; i < this.x; i++){
       for(var j = 0; j < this.y; j++){
-        if(!this.cells[i]) this.cells[i] = []
-        this.cells[i][j].setNeighboors(0);
+        let num = 0;
+        let cell = this.cells[i][j];
+        if (!cell.isBee()) {
+          if(i!=0 && this.cells[i-1][j].isBee()) num++;
+          if(i!=0 && j!=0 && this.cells[i-1][j-1].isBee()) num++;
+          if(j!=0 && this.cells[i][j-1].isBee()) num++;
+          if(i!=this.x-1 && this.cells[i+1][j].isBee()) num++;
+          if(i!=this.x-1 && j!=0 && this.cells[i+1][j-1].isBee()) num++;
+          if(i!=this.x-1 && j!=this.y-1 && this.cells[i+1][j+1].isBee()) num++;
+          if(j!=this.y-1 && this.cells[i][j+1].isBee()) num++;
+          if(i!=0 && j!=this.y-1 && this.cells[i-1][j+1].isBee()) num++;
+          this.cells[i][j].setNeighboors(num);
+        }
       }
     }
   }
@@ -42,6 +53,7 @@ class Board extends Phaser.Group {
       for(var j = 0; j < this.y; j++){
         if(!this.cells[i]) this.cells[i] = []
         this.cells[i][j] = new Cell(this.game,
+          i, j,
           this.background.x + this.cellSize + i * this.cellSize,
           this.background.y + this.cellSizeY + j * this.cellSizeY - 2,
           this.cellSize);

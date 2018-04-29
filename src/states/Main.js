@@ -4,7 +4,7 @@ import Board from '../objects/Board';
 export default class Main extends Phaser.State {
   create() {
     this.cellSize = 38;
-    this.numBee = 30;
+    this.numBee = 10;
     this.size = {
       x:10,
       y:10
